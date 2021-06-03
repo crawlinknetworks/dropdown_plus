@@ -6,7 +6,7 @@ Simple and easy to use Dropdown in forms with search, keyboard navigation, offil
 
 Simple Text Dropdown.
 
-![](./screenshots/screen1.png?raw=true)
+![](https://github.com/crawlinknetworks/dropdown_plus/blob/master/screenshots/screen1.png?raw=true)
 
 ```
 TextDropdown(
@@ -14,9 +14,9 @@ TextDropdown(
     decoration: InputDecoration(
         border: OutlineInputBorder(),
         suffixIcon: Icon(Icons.arrow_drop_down),
-        labelText: "Dropdown"),
+        labelText: "Gender"),
+    dropdownHeight: 96,
 ),
-
 ```
 
 ## Install
@@ -28,7 +28,7 @@ dropdown_plus: <lastest version>
 
 ## Customizable Example
 
-![](./screenshots/screen2.png?raw=true)
+![](https://github.com/crawlinknetworks/dropdown_plus/blob/master/screenshots/screen2.png?raw=true)
 
 ```
 Dropdown<String>(
