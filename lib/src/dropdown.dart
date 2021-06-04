@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:rxdart/rxdart.dart';
@@ -14,7 +13,7 @@ class Dropdown<T> extends StatefulWidget {
     bool selected,
     Function() onTap,
   ) dropdownItemFn;
-  final Widget Function(T item) displayItemFn;
+  final Widget Function(T? item) displayItemFn;
   final InputDecoration? decoration;
   final Color? dropdownColor;
   final ValueNotifier<T>? controller;
@@ -53,13 +52,14 @@ class DropdownState<T> extends State<Dropdown>
       ValueNotifier<List<T>>([]);
   final TextEditingController? _searchTextController = TextEditingController();
 
-  bool _isEmpty = false;
   bool _isFocused = false;
   OverlayEntry? _overlayEntry;
   List<T>? _options;
   int _listItemFocusedposition = 0;
   T? _selectedItem;
   Widget? _displayItem;
+
+  bool get _isEmpty => _selectedItem == null;
 
   DropdownState() : super() {}
 
@@ -91,7 +91,8 @@ class DropdownState<T> extends State<Dropdown>
   @override
   Widget build(BuildContext context) {
     // print("_overlayEntry : $_overlayEntry");
-    // _displayItem = widget.displayItemFn(_selectedItem??"");
+
+    _displayItem = widget.displayItemFn(_selectedItem);
 
     return CompositedTransformTarget(
       link: this._layerLink,
@@ -104,12 +105,7 @@ class DropdownState<T> extends State<Dropdown>
           autofocus: widget.autoFocus,
           focusNode: _widgetFocusNode,
           onFocusChange: (focused) {
-            print('focused : $focused');
-            if (focused) {
-              // _searchFocusNode.requestFocus();
-            }
             setState(() {
-              _isEmpty = !focused;
               _isFocused = focused;
             });
           },
@@ -171,7 +167,7 @@ class DropdownState<T> extends State<Dropdown>
           child: Material(
               elevation: 4.0,
               child: SizedBox(
-                height:   widget.dropdownHeight??240,
+                height: widget.dropdownHeight ?? 240,
                 child: Container(
                   color: widget.dropdownColor ?? Colors.white70,
                   child: Column(
@@ -301,15 +297,26 @@ class DropdownState<T> extends State<Dropdown>
   _setValue() {
     var item = _options![_listItemFocusedposition];
     _selectedItem = item;
-    _displayItem = widget.displayItemFn(_selectedItem);
-    widget.onChanged!(_selectedItem);
-    widget.controller?.value = item;
+
+    if (widget.controller != null) {
+      widget.controller!.value = _selectedItem;
+    }
+
+    if (widget.onChanged != null) {
+      widget.onChanged!(_selectedItem);
+    }
+
     setState(() {});
   }
 
   _clearValue() {
     var item;
-    widget.controller?.value = item;
+    if (widget.controller != null) {
+      widget.controller!.value = item;
+    }
+    if (widget.onChanged != null) {
+      widget.onChanged!(_selectedItem);
+    }
     _searchTextController?.value = TextEditingValue(text: "");
   }
 }
