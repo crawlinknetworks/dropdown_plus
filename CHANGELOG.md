@@ -1,3 +1,7 @@
+## 0.0.4
+
+* Bug fix value change.
+
 ## 0.0.3
 
 * Documentation updated.
