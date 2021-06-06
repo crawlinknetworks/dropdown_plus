@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:rxdart/rxdart.dart';
 
 class Dropdown<T> extends StatefulWidget {
   final bool autoFocus;
@@ -47,7 +48,6 @@ class DropdownState<T> extends State<Dropdown>
   final FocusNode _widgetFocusNode = FocusNode();
   final FocusNode _searchFocusNode = FocusNode();
   final LayerLink _layerLink = LayerLink();
-  final _textChangeSubject = PublishSubject<String>();
   final ValueNotifier<List<T>> _listItemsValueNotifier =
       ValueNotifier<List<T>>([]);
   final TextEditingController? _searchTextController = TextEditingController();
@@ -55,9 +55,11 @@ class DropdownState<T> extends State<Dropdown>
   bool _isFocused = false;
   OverlayEntry? _overlayEntry;
   List<T>? _options;
-  int _listItemFocusedposition = 0;
+  int _listItemFocusedPosition = 0;
   T? _selectedItem;
   Widget? _displayItem;
+  Timer? _debounce;
+  String? _lastSearchString;
 
   bool get _isEmpty => _selectedItem == null;
 
@@ -65,6 +67,8 @@ class DropdownState<T> extends State<Dropdown>
 
   @override
   void initState() {
+    super.initState();
+
     if (widget.autoFocus) _widgetFocusNode.requestFocus();
     if (widget.controller != null) _selectedItem = widget.controller!.value;
 
@@ -73,19 +77,12 @@ class DropdownState<T> extends State<Dropdown>
         _removeOverlay();
       }
     });
-
-    _textChangeSubject.stream
-        .debounceTime(Duration(milliseconds: 300))
-        .map((str) => str.trim().toLowerCase())
-        .distinct()
-        .listen(_search);
-
-    super.initState();
   }
 
   @override
   void dispose() {
     super.dispose();
+    _debounce?.cancel();
   }
 
   @override
@@ -180,14 +177,14 @@ class DropdownState<T> extends State<Dropdown>
                             valueListenable: _listItemsValueNotifier,
                             builder: (context, List<T> items, child) {
                               // print(
-                              //     'ValueListenableBuilder $_listItemFocusedposition : ${items.length}');
+                              //     'ValueListenableBuilder $_listItemFocusedPosition : ${items.length}');
                               return ListView.builder(
                                   shrinkWrap: true,
                                   itemCount: _options!.length,
-                                  itemBuilder: (context, posistion) {
-                                    T item = _options![posistion];
+                                  itemBuilder: (context, position) {
+                                    T item = _options![position];
                                     Function() onTap = () {
-                                      _listItemFocusedposition = posistion;
+                                      _listItemFocusedPosition = position;
                                       _searchTextController?.value =
                                           TextEditingValue(text: "");
                                       _removeOverlay();
@@ -195,8 +192,8 @@ class DropdownState<T> extends State<Dropdown>
                                     };
                                     ListTile listTile = widget.dropdownItemFn(
                                       item,
-                                      posistion,
-                                      posistion == _listItemFocusedposition,
+                                      position,
+                                      position == _listItemFocusedPosition,
                                       item != null && _selectedItem == item,
                                       onTap,
                                     );
@@ -246,8 +243,14 @@ class DropdownState<T> extends State<Dropdown>
   }
 
   _onTextChanged(String? str) {
-    // print('_onTextChanged $str');
-    _textChangeSubject.add(str ?? '');
+    if (_debounce?.isActive ?? false) _debounce!.cancel();
+    _debounce = Timer(const Duration(milliseconds: 300), () {
+      // print("_onChanged: $_lastSearchString = $str");
+      if (_lastSearchString != str) {
+        _lastSearchString = str;
+        _search(str ?? "");
+      }
+    });
   }
 
   _onKeyPressed(RawKeyEvent event) {
@@ -263,17 +266,17 @@ class DropdownState<T> extends State<Dropdown>
       _removeOverlay();
       return true;
     } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
-      int v = _listItemFocusedposition;
+      int v = _listItemFocusedPosition;
       v++;
       if (v >= _options!.length) v = 0;
-      _listItemFocusedposition = v;
+      _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
       return true;
     } else if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
-      int v = _listItemFocusedposition;
+      int v = _listItemFocusedPosition;
       v--;
       if (v < 0) v = _options!.length - 1;
-      _listItemFocusedposition = v;
+      _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
       return true;
     }
@@ -295,7 +298,7 @@ class DropdownState<T> extends State<Dropdown>
   }
 
   _setValue() {
-    var item = _options![_listItemFocusedposition];
+    var item = _options![_listItemFocusedPosition];
     _selectedItem = item;
 
     if (widget.controller != null) {
