@@ -49,7 +49,7 @@ class TextDropdownFormField extends StatelessWidget {
           item,
           style: TextStyle(color: selected ? Colors.blue : Colors.black87),
         ),
-        tileColor: focused ? Color.fromARGB(10, 0, 0, 0) : Colors.transparent,
+        tileColor: focused ? Color.fromARGB(20, 0, 0, 0) : Colors.transparent,
         onTap: onTap,
       ),
     );

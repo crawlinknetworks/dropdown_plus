@@ -22,6 +22,10 @@ class DropdownFormField<T> extends StatefulWidget {
   final void Function(T?)? onSaved;
   final String? Function(T?)? validator;
   final double? dropdownHeight;
+  final TextStyle? searchTextStyle;
+  final String emptyText;
+  final String emptyActionText;
+  final Future<void> Function()? onEmptyActionPressed;
 
   DropdownFormField({
     Key? key,
@@ -37,6 +41,10 @@ class DropdownFormField<T> extends StatefulWidget {
     this.onChanged,
     this.onSaved,
     this.dropdownHeight,
+    this.searchTextStyle,
+    this.emptyText = "No matching found!",
+    this.emptyActionText = 'Create new',
+    this.onEmptyActionPressed,
   }) : super(key: key);
 
   @override
@@ -50,7 +58,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   final LayerLink _layerLink = LayerLink();
   final ValueNotifier<List<T>> _listItemsValueNotifier =
       ValueNotifier<List<T>>([]);
-  final TextEditingController? _searchTextController = TextEditingController();
+  final TextEditingController _searchTextController = TextEditingController();
 
   bool _isFocused = false;
   OverlayEntry? _overlayEntry;
@@ -123,8 +131,8 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                   isFocused: _isFocused,
                   child: this._overlayEntry != null
                       ? EditableText(
-                          style: TextStyle(fontSize: 16),
-                          controller: _searchTextController!,
+                          style: TextStyle(fontSize: 16, color: Colors.black87),
+                          controller: _searchTextController,
                           cursorColor: Colors.black87,
                           focusNode: _searchFocusNode,
                           backgroundCursorColor: Colors.transparent,
@@ -135,9 +143,12 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                             _onTextChanged(str);
                           },
                           onSubmitted: (str) {
-                            _searchTextController?.value =
+                            print('onSubmitted');
+                            _searchTextController.value =
                                 TextEditingValue(text: "");
                             _setValue();
+                            _removeOverlay();
+                            _widgetFocusNode.nextFocus();
                           },
                           onEditingComplete: () {},
                         )
@@ -166,26 +177,20 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
               child: SizedBox(
                 height: widget.dropdownHeight ?? 240,
                 child: Container(
-                  color: widget.dropdownColor ?? Colors.white70,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Expanded(
-                        child: ValueListenableBuilder(
-                            valueListenable: _listItemsValueNotifier,
-                            builder: (context, List<T> items, child) {
-                              // print(
-                              //     'ValueListenableBuilder $_listItemFocusedPosition : ${items.length}');
-                              return ListView.builder(
+                    color: widget.dropdownColor ?? Colors.white70,
+                    child: ValueListenableBuilder(
+                        valueListenable: _listItemsValueNotifier,
+                        builder: (context, List<T> items, child) {
+                          return _options!.length > 0
+                              ? ListView.builder(
                                   shrinkWrap: true,
+                                  padding: EdgeInsets.zero,
                                   itemCount: _options!.length,
                                   itemBuilder: (context, position) {
                                     T item = _options![position];
                                     Function() onTap = () {
                                       _listItemFocusedPosition = position;
-                                      _searchTextController?.value =
+                                      _searchTextController.value =
                                           TextEditingValue(text: "");
                                       _removeOverlay();
                                       _setValue();
@@ -199,12 +204,33 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                                     );
 
                                     return listTile;
-                                  });
-                            }),
-                      ),
-                    ],
-                  ),
-                ),
+                                  })
+                              : Container(
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        widget.emptyText,
+                                        style: TextStyle(color: Colors.black45),
+                                      ),
+                                      if (widget.onEmptyActionPressed != null)
+                                        TextButton(
+                                          onPressed: () async {
+                                            await widget
+                                                .onEmptyActionPressed!();
+                                            _search(_searchTextController
+                                                .value.text);
+                                          },
+                                          child: Text(widget.emptyActionText),
+                                        ),
+                                    ],
+                                  ),
+                                );
+                        })),
               )),
         ),
       );
@@ -231,6 +257,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     if (_overlayEntry != null) {
       _overlayEntry!.remove();
       _overlayEntry = null;
+      _searchTextController.value = TextEditingValue.empty;
       setState(() {});
     }
   }
@@ -320,6 +347,6 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     if (widget.onChanged != null) {
       widget.onChanged!(_selectedItem);
     }
-    _searchTextController?.value = TextEditingValue(text: "");
+    _searchTextController.value = TextEditingValue(text: "");
   }
 }
