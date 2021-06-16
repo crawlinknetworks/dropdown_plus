@@ -9,7 +9,7 @@ Simple Text Dropdown.
 ![](https://github.com/crawlinknetworks/dropdown_plus/blob/master/screenshots/screen1.png?raw=true)
 
 ```
-TextDropdown(
+TextDropdownFormField(
     options: ["Male", "Female"],
     decoration: InputDecoration(
         border: OutlineInputBorder(),
@@ -31,7 +31,7 @@ dropdown_plus: <lastest version>
 ![](https://github.com/crawlinknetworks/dropdown_plus/blob/master/screenshots/screen2.png?raw=true)
 
 ```
-Dropdown<String>(
+DropdownFormField<String>(
     decoration: InputDecoration(
         border: OutlineInputBorder(),
         suffixIcon: Icon(Icons.arrow_drop_down),

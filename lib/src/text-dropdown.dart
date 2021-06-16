@@ -1,10 +1,8 @@
-
- 
 import 'package:dropdown_plus/dropdown_plus.dart';
 import 'package:flutter/material.dart';
 
 /// Simple dorpdown whith plain text as a dropdown items.
-class TextDropdown extends StatelessWidget {
+class TextDropdownFormField extends StatelessWidget {
   final List<String> options;
   final InputDecoration? decoration;
   final ValueNotifier<String>? controller;
@@ -15,7 +13,7 @@ class TextDropdown extends StatelessWidget {
   final Future<List<String>> Function(String str)? findFn;
   final double? dropdownHeight;
 
-  TextDropdown({
+  TextDropdownFormField({
     Key? key,
     required this.options,
     this.decoration,
@@ -30,7 +28,7 @@ class TextDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Dropdown<String>(
+    return DropdownFormField<String>(
       decoration: decoration,
       onSaved: onSaved,
       controller: controller,

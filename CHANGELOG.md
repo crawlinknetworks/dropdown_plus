@@ -1,3 +1,7 @@
+## 0.0.5
+
+* Widget name Change to DropdownFormField.
+
 ## 0.0.4
 
 * Bug fix value change.

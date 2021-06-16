@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-class Dropdown<T> extends StatefulWidget {
+class DropdownFormField<T> extends StatefulWidget {
   final bool autoFocus;
   final bool Function(T item, String str)? filterFn;
   final Future<List<T>> Function(String str) findFn;
@@ -23,7 +23,7 @@ class Dropdown<T> extends StatefulWidget {
   final String? Function(T?)? validator;
   final double? dropdownHeight;
 
-  Dropdown({
+  DropdownFormField({
     Key? key,
     required this.dropdownItemFn,
     required this.displayItemFn,
@@ -40,10 +40,10 @@ class Dropdown<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  DropdownState createState() => DropdownState<T>();
+  DropdownFormFieldState createState() => DropdownFormFieldState<T>();
 }
 
-class DropdownState<T> extends State<Dropdown>
+class DropdownFormFieldState<T> extends State<DropdownFormField>
     with SingleTickerProviderStateMixin {
   final FocusNode _widgetFocusNode = FocusNode();
   final FocusNode _searchFocusNode = FocusNode();
@@ -63,7 +63,7 @@ class DropdownState<T> extends State<Dropdown>
 
   bool get _isEmpty => _selectedItem == null;
 
-  DropdownState() : super() {}
+  DropdownFormFieldState() : super() {}
 
   @override
   void initState() {

@@ -34,7 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: EdgeInsets.all(16),
         child: Column(
           children: [
-            TextDropdown(
+            TextDropdownFormField(
               options: ["Male", "Female"],
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
@@ -45,7 +45,7 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
               height: 16,
             ),
-            Dropdown<String>(
+            DropdownFormField<String>(
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   suffixIcon: Icon(Icons.arrow_drop_down),
