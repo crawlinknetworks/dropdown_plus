@@ -43,11 +43,13 @@ class TextDropdownFormField extends StatelessWidget {
       filterFn: filterFn ??
           (dynamic item, str) =>
               item.toLowerCase().indexOf(str.toLowerCase()) >= 0,
-      dropdownItemFn: (dynamic item, position, focused, selected, onTap) =>
-          ListTile(
+      dropdownItemFn:
+          (dynamic item, dynamic lastSelectedItem, position, focused,  onTap) =>
+              ListTile(
         title: Text(
           item,
-          style: TextStyle(color: selected ? Colors.blue : Colors.black87),
+          style: TextStyle(
+              color: item == lastSelectedItem ? Colors.blue : Colors.black87),
         ),
         tileColor: focused ? Color.fromARGB(20, 0, 0, 0) : Colors.transparent,
         onTap: onTap,

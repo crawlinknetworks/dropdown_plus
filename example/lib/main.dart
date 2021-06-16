@@ -24,6 +24,31 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final List<Map<String, dynamic>> _roles = [
+    {"name": "Super Admin", "desc": "Having full access rights", "role": 1},
+    {
+      "name": "Admin",
+      "desc": "Having full access rights of a Organization",
+      "role": 2
+    },
+    {
+      "name": "Manager",
+      "desc": "Having Magenent access rights of a Organization",
+      "role": 3
+    },
+    {
+      "name": "Technician",
+      "desc": "Having Technician Support access rights",
+      "role": 4
+    },
+    {
+      "name": "Customer Support",
+      "desc": "Having Customer Support access rights",
+      "role": 5
+    },
+    {"name": "User", "desc": "Having End User access rights", "role": 6},
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,40 +70,31 @@ class _MyHomePageState extends State<MyHomePage> {
             SizedBox(
               height: 16,
             ),
-            DropdownFormField<String>(
+            DropdownFormField<Map<String, dynamic>>(
               onEmptyActionPressed: () async {},
               decoration: InputDecoration(
                   border: OutlineInputBorder(),
                   suffixIcon: Icon(Icons.arrow_drop_down),
-                  labelText: "Designation"),
+                  labelText: "Access"),
               onSaved: (dynamic str) {},
               onChanged: (dynamic str) {},
               validator: (dynamic str) {},
-              displayItemFn: (dynamic str) => Text(
-                str ?? '',
+              displayItemFn: (dynamic item) => Text(
+                (item ?? {})['name'] ?? '',
                 style: TextStyle(fontSize: 16),
               ),
-              findFn: (dynamic str) async => [
-                "Admin",
-                "Branch Manager",
-                "Area Manager",
-                "Team Lead",
-                "Developer",
-                "Executive",
-                "Helper"
-              ],
+              findFn: (dynamic str) async => _roles,
               filterFn: (dynamic item, str) =>
-                  item.toLowerCase().indexOf(str.toLowerCase()) >= 0,
-              dropdownItemFn:
-                  (dynamic item, position, focused, selected, onTap) =>
-                      ListTile(
-                title: Text(
-                  item,
-                  style:
-                      TextStyle(color: selected ? Colors.blue : Colors.black87),
+                  item['name'].toLowerCase().indexOf(str.toLowerCase()) >= 0,
+              dropdownItemFn: (dynamic item, dynamic lastSelectedItem, position,
+                      focused, onTap) =>
+                  ListTile(
+                title: Text(item['name']),
+                subtitle: Text(
+                  item['desc'] ?? '',
                 ),
                 tileColor:
-                    focused ? Color.fromARGB(10, 0, 0, 0) : Colors.transparent,
+                    focused ? Color.fromARGB(20, 0, 0, 0) : Colors.transparent,
                 onTap: onTap,
               ),
             ),

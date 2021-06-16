@@ -3,28 +3,56 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+/// Create a dropdown form field
 class DropdownFormField<T> extends StatefulWidget {
   final bool autoFocus;
+
+  /// It will trigger on user search
   final bool Function(T item, String str)? filterFn;
+
+  /// Return list of items what need to list for dropdown.
+  /// The list may be offline, or remote data from server.
   final Future<List<T>> Function(String str) findFn;
+
+  /// Build dropdown Items, it get called for all dropdown items
+  ///  [item] = [dynamic value] List item to build dropdown Listtile
+  /// [lasSelectedItem] = [null | dynamic value] last selected item, it gives user chance to highlight selected item
+  /// [position] = [0,1,2...] Index of the list item
+  /// [focused] = [true | false] is the item if focused, it gives user chance to highlight focused item
+  /// [onTap] = [Function] *important! just assign this function to Listtile.onTap  = onTap, incase you missed this,
+  /// the click event if the dropdown item will not work.
+  ///
   final ListTile Function(
     T item,
+    T lasSelectedItem,
     int position,
     bool focused,
-    bool selected,
     Function() onTap,
   ) dropdownItemFn;
+
+  /// Build widget to display selected item inside Form Field
   final Widget Function(T? item) displayItemFn;
+
   final InputDecoration? decoration;
   final Color? dropdownColor;
   final ValueNotifier<T>? controller;
   final void Function(T item)? onChanged;
   final void Function(T?)? onSaved;
   final String? Function(T?)? validator;
+
+  /// height of the dropdown overlay, Default: 240
   final double? dropdownHeight;
+
+  /// Style the search box text
   final TextStyle? searchTextStyle;
+
+  /// Message to disloay if the search dows not match with any item, Default : "No matching found!"
   final String emptyText;
+
+  /// Give action text if you want handle the empty search.
   final String emptyActionText;
+
+  /// this functon triggers on click of emptyAction button
   final Future<void> Function()? onEmptyActionPressed;
 
   DropdownFormField({
@@ -62,6 +90,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
 
   bool _isFocused = false;
   OverlayEntry? _overlayEntry;
+  OverlayEntry? _overlayBackdropEntry;
   List<T>? _options;
   int _listItemFocusedPosition = 0;
   T? _selectedItem;
@@ -197,9 +226,9 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                                     };
                                     ListTile listTile = widget.dropdownItemFn(
                                       item,
+                                      _selectedItem,
                                       position,
                                       position == _listItemFocusedPosition,
-                                      item != null && _selectedItem == item,
                                       onTap,
                                     );
 
@@ -239,12 +268,29 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     return overlay;
   }
 
+  OverlayEntry _createBackdropOverlay() {
+    return OverlayEntry(
+        builder: (context) => Positioned(
+            left: 0,
+            top: 0,
+            height: MediaQuery.of(context).size.height,
+            width: MediaQuery.of(context).size.width,
+            child: GestureDetector(
+              onTap: () {
+                _removeOverlay();
+              },
+            )));
+  }
+
   _addOverlay() {
     if (_overlayEntry == null) {
       _search("");
+      _overlayBackdropEntry = _createBackdropOverlay();
       _overlayEntry = _createOverlayEntry();
       if (_overlayEntry != null) {
-        Overlay.of(context)!.insert(_overlayEntry!);
+        // Overlay.of(context)!.insert(_overlayEntry!);
+        Overlay.of(context)!
+            .insertAll([_overlayBackdropEntry!, _overlayEntry!]);
         setState(() {
           _searchFocusNode.requestFocus();
         });
@@ -255,6 +301,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   /// Dettach overlay from the dropdown widget
   _removeOverlay() {
     if (_overlayEntry != null) {
+      _overlayBackdropEntry!.remove();
       _overlayEntry!.remove();
       _overlayEntry = null;
       _searchTextController.value = TextEditingValue.empty;
