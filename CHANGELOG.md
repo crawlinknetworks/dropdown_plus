@@ -1,3 +1,7 @@
+## 0.0.6
+
+* selectedFn added.
+
 ## 0.0.5
 
 * Widget name Change to DropdownFormField.

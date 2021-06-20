@@ -10,6 +10,9 @@ class DropdownFormField<T> extends StatefulWidget {
   /// It will trigger on user search
   final bool Function(T item, String str)? filterFn;
 
+  /// Check item is selectd
+  final bool Function(T? item1, T? item2)? selectedFn;
+
   /// Return list of items what need to list for dropdown.
   /// The list may be offline, or remote data from server.
   final Future<List<T>> Function(String str) findFn;
@@ -24,9 +27,9 @@ class DropdownFormField<T> extends StatefulWidget {
   ///
   final ListTile Function(
     T item,
-    T lasSelectedItem,
     int position,
     bool focused,
+    bool selected,
     Function() onTap,
   ) dropdownItemFn;
 
@@ -73,6 +76,7 @@ class DropdownFormField<T> extends StatefulWidget {
     this.emptyText = "No matching found!",
     this.emptyActionText = 'Create new',
     this.onEmptyActionPressed,
+    this.selectedFn,
   }) : super(key: key);
 
   @override
@@ -88,7 +92,12 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
       ValueNotifier<List<T>>([]);
   final TextEditingController _searchTextController = TextEditingController();
 
+  final Function(T?, T?) _selectedFn =
+      (dynamic item1, dynamic item2) => item1 == item2;
+
+  bool get _isEmpty => _selectedItem == null;
   bool _isFocused = false;
+
   OverlayEntry? _overlayEntry;
   OverlayEntry? _overlayBackdropEntry;
   List<T>? _options;
@@ -97,8 +106,6 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   Widget? _displayItem;
   Timer? _debounce;
   String? _lastSearchString;
-
-  bool get _isEmpty => _selectedItem == null;
 
   DropdownFormFieldState() : super() {}
 
@@ -172,7 +179,6 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                             _onTextChanged(str);
                           },
                           onSubmitted: (str) {
-                            print('onSubmitted');
                             _searchTextController.value =
                                 TextEditingValue(text: "");
                             _setValue();
@@ -226,9 +232,10 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                                     };
                                     ListTile listTile = widget.dropdownItemFn(
                                       item,
-                                      _selectedItem,
                                       position,
                                       position == _listItemFocusedPosition,
+                                      (widget.selectedFn ?? _selectedFn)(
+                                          _selectedItem!, item),
                                       onTap,
                                     );
 

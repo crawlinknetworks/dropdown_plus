@@ -86,8 +86,8 @@ class _MyHomePageState extends State<MyHomePage> {
               findFn: (dynamic str) async => _roles,
               filterFn: (dynamic item, str) =>
                   item['name'].toLowerCase().indexOf(str.toLowerCase()) >= 0,
-              dropdownItemFn: (dynamic item, dynamic lastSelectedItem, position,
-                      focused, onTap) =>
+              dropdownItemFn: (dynamic item, int position, bool focused,
+                      bool selected, Function() onTap) =>
                   ListTile(
                 title: Text(item['name']),
                 subtitle: Text(
