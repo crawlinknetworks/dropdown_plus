@@ -84,6 +84,12 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: TextStyle(fontSize: 16),
               ),
               findFn: (dynamic str) async => _roles,
+              selectedFn: (dynamic item1, dynamic item2) {
+                if (item1 != null && item2 != null) {
+                  return item1['name'] == item2['name'];
+                }
+                return false;
+              },
               filterFn: (dynamic item, str) =>
                   item['name'].toLowerCase().indexOf(str.toLowerCase()) >= 0,
               dropdownItemFn: (dynamic item, int position, bool focused,

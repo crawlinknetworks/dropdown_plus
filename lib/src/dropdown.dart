@@ -127,6 +127,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   void dispose() {
     super.dispose();
     _debounce?.cancel();
+    _searchTextController.dispose();
   }
 
   @override
@@ -235,7 +236,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                                       position,
                                       position == _listItemFocusedPosition,
                                       (widget.selectedFn ?? _selectedFn)(
-                                          _selectedItem!, item),
+                                          _selectedItem, item),
                                       onTap,
                                     );
 
