@@ -94,3 +94,33 @@ DropdownFormField<Map<String, dynamic>>(
 ),
 ```
 
+## Options
+
+```
+final bool autoFocus;
+final bool Function(dynamic item, String str)? filterFn;
+final bool Function(dynamic item1, dynamic item2)? selectedFn;
+final Future<List<dynamic>> Function(String str) findFn;
+
+final ListTile Function(
+  dynamic item,
+  int position,
+  bool focused,
+  bool selected,
+  Function() onTap,
+) dropdownItemFn;
+
+final Widget Function(dynamic item) displayItemFn;
+final InputDecoration? decoration;
+final Color? dropdownColor;
+final ValueNotifier<dynamic>? controller;
+final void Function(dynamic item)? onChanged;
+final void Function(dynamic)? onSaved;
+final String? Function(T?)? validator;
+final double? dropdownHeight;
+final TextStyle? searchTextStyle;
+final String emptyText;
+final String emptyActionText;
+final Future<void> Function()? onEmptyActionPressed;
+
+```
