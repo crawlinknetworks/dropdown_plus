@@ -217,7 +217,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                     child: ValueListenableBuilder(
                         valueListenable: _listItemsValueNotifier,
                         builder: (context, List<T> items, child) {
-                          return _options!.length > 0
+                          return _options != null && _options!.length > 0
                               ? ListView.builder(
                                   shrinkWrap: true,
                                   padding: EdgeInsets.zero,
