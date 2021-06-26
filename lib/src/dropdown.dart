@@ -3,6 +3,23 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:flutter/foundation.dart';
+
+class DropdownEditingController<T> extends ChangeNotifier {
+  T? _value;
+  DropdownEditingController({T? value}) : _value = value;
+
+  T? get value => _value;
+  set value(T? newValue) {
+    if (_value == newValue) return;
+    _value = newValue;
+    notifyListeners();
+  }
+
+  @override
+  String toString() => '${describeIdentity(this)}($value)';
+}
+
 /// Create a dropdown form field
 class DropdownFormField<T> extends StatefulWidget {
   final bool autoFocus;
@@ -38,7 +55,7 @@ class DropdownFormField<T> extends StatefulWidget {
 
   final InputDecoration? decoration;
   final Color? dropdownColor;
-  final ValueNotifier<T>? controller;
+  final DropdownEditingController<T>? controller;
   final void Function(T item)? onChanged;
   final void Function(T?)? onSaved;
   final String? Function(T?)? validator;

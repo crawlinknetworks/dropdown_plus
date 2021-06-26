@@ -113,7 +113,7 @@ final ListTile Function(
 final Widget Function(dynamic item) displayItemFn;
 final InputDecoration? decoration;
 final Color? dropdownColor;
-final ValueNotifier<dynamic>? controller;
+final DropdownEditingController<T>? controller;
 final void Function(dynamic item)? onChanged;
 final void Function(dynamic)? onSaved;
 final String? Function(T?)? validator;
