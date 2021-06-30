@@ -108,6 +108,8 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   final ValueNotifier<List<T>> _listItemsValueNotifier =
       ValueNotifier<List<T>>([]);
   final TextEditingController _searchTextController = TextEditingController();
+  final DropdownEditingController<T>? _controller =
+      DropdownEditingController<T>();
 
   final Function(T?, T?) _selectedFn =
       (dynamic item1, dynamic item2) => item1 == item2;
@@ -124,6 +126,9 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   Timer? _debounce;
   String? _lastSearchString;
 
+  DropdownEditingController<dynamic>? get _effectiveController =>
+      widget.controller ?? _controller;
+
   DropdownFormFieldState() : super() {}
 
   @override
@@ -131,7 +136,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     super.initState();
 
     if (widget.autoFocus) _widgetFocusNode.requestFocus();
-    if (widget.controller != null) _selectedItem = widget.controller!.value;
+    _selectedItem = _effectiveController!.value;
 
     _searchFocusNode.addListener(() {
       if (!_searchFocusNode.hasFocus && _overlayEntry != null) {
@@ -172,42 +177,51 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
             return _onKeyPressed(event);
           },
           child: FormField(
-              validator: widget.validator ?? (str) {},
-              onSaved: widget.onSaved ?? (str) {},
-              builder: (state) {
-                return InputDecorator(
-                  decoration: widget.decoration ??
-                      InputDecoration(
-                        border: UnderlineInputBorder(),
-                        suffixIcon: Icon(Icons.arrow_drop_down),
-                      ),
-                  isEmpty: _isEmpty,
-                  isFocused: _isFocused,
-                  child: this._overlayEntry != null
-                      ? EditableText(
-                          style: TextStyle(fontSize: 16, color: Colors.black87),
-                          controller: _searchTextController,
-                          cursorColor: Colors.black87,
-                          focusNode: _searchFocusNode,
-                          backgroundCursorColor: Colors.transparent,
-                          onChanged: (str) {
-                            if (_overlayEntry == null) {
-                              _addOverlay();
-                            }
-                            _onTextChanged(str);
-                          },
-                          onSubmitted: (str) {
-                            _searchTextController.value =
-                                TextEditingValue(text: "");
-                            _setValue();
-                            _removeOverlay();
-                            _widgetFocusNode.nextFocus();
-                          },
-                          onEditingComplete: () {},
-                        )
-                      : _displayItem ?? Container(),
-                );
-              }),
+            validator: (str) {
+              if (widget.validator != null) {
+                widget.validator!(_effectiveController!.value);
+              }
+            },
+            onSaved: (str) {
+              if (widget.onSaved != null) {
+                widget.onSaved!(_effectiveController!.value);
+              }
+            },
+            builder: (state) {
+              return InputDecorator(
+                decoration: widget.decoration ??
+                    InputDecoration(
+                      border: UnderlineInputBorder(),
+                      suffixIcon: Icon(Icons.arrow_drop_down),
+                    ),
+                isEmpty: _isEmpty,
+                isFocused: _isFocused,
+                child: this._overlayEntry != null
+                    ? EditableText(
+                        style: TextStyle(fontSize: 16, color: Colors.black87),
+                        controller: _searchTextController,
+                        cursorColor: Colors.black87,
+                        focusNode: _searchFocusNode,
+                        backgroundCursorColor: Colors.transparent,
+                        onChanged: (str) {
+                          if (_overlayEntry == null) {
+                            _addOverlay();
+                          }
+                          _onTextChanged(str);
+                        },
+                        onSubmitted: (str) {
+                          _searchTextController.value =
+                              TextEditingValue(text: "");
+                          _setValue();
+                          _removeOverlay();
+                          _widgetFocusNode.nextFocus();
+                        },
+                        onEditingComplete: () {},
+                      )
+                    : _displayItem ?? Container(),
+              );
+            },
+          ),
         ),
       ),
     );
@@ -400,9 +414,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     var item = _options![_listItemFocusedPosition];
     _selectedItem = item;
 
-    if (widget.controller != null) {
-      widget.controller!.value = _selectedItem;
-    }
+    _effectiveController!.value = _selectedItem;
 
     if (widget.onChanged != null) {
       widget.onChanged!(_selectedItem);
@@ -413,9 +425,8 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
 
   _clearValue() {
     var item;
-    if (widget.controller != null) {
-      widget.controller!.value = item;
-    }
+    _effectiveController!.value = item;
+
     if (widget.onChanged != null) {
       widget.onChanged!(_selectedItem);
     }
