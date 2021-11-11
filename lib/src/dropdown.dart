@@ -56,7 +56,7 @@ class DropdownFormField<T> extends StatefulWidget {
   final InputDecoration? decoration;
   final Color? dropdownColor;
   final DropdownEditingController<T>? controller;
-  final void Function(T item)? onChanged;
+  final void Function(T? item)? onChanged;
   final void Function(T?)? onSaved;
   final String? Function(T?)? validator;
 
@@ -100,7 +100,7 @@ class DropdownFormField<T> extends StatefulWidget {
   DropdownFormFieldState createState() => DropdownFormFieldState<T>();
 }
 
-class DropdownFormFieldState<T> extends State<DropdownFormField>
+class DropdownFormFieldState<T> extends State<DropdownFormField<T>>
     with SingleTickerProviderStateMixin {
   final FocusNode _widgetFocusNode = FocusNode();
   final FocusNode _searchFocusNode = FocusNode();
@@ -111,8 +111,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   final DropdownEditingController<T>? _controller =
       DropdownEditingController<T>();
 
-  final Function(T?, T?) _selectedFn =
-      (dynamic item1, dynamic item2) => item1 == item2;
+  final Function(T?, T?) _selectedFn = (T? item1, T? item2) => item1 == item2;
 
   bool get _isEmpty => _selectedItem == null;
   bool _isFocused = false;
@@ -126,7 +125,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   Timer? _debounce;
   String? _lastSearchString;
 
-  DropdownEditingController<dynamic>? get _effectiveController =>
+  DropdownEditingController<T>? get _effectiveController =>
       widget.controller ?? _controller;
 
   DropdownFormFieldState() : super() {}
