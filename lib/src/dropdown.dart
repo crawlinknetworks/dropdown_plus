@@ -136,7 +136,6 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     super.initState();
 
     if (widget.autoFocus) _widgetFocusNode.requestFocus();
-    _selectedItem = _effectiveController!.value;
 
     _searchFocusNode.addListener(() {
       if (!_searchFocusNode.hasFocus && _overlayEntry != null) {
@@ -156,6 +155,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
   Widget build(BuildContext context) {
     // print("_overlayEntry : $_overlayEntry");
 
+    _selectedItem = _effectiveController!.value;
     _displayItem = widget.displayItemFn(_selectedItem);
 
     return CompositedTransformTarget(
