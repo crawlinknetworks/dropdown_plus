@@ -97,10 +97,10 @@ class DropdownFormField<T> extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  DropdownFormFieldState createState() => DropdownFormFieldState<T>();
+  DropdownFormFieldState<T> createState() => DropdownFormFieldState<T>();
 }
 
-class DropdownFormFieldState<T> extends State<DropdownFormField>
+class DropdownFormFieldState<T> extends State<DropdownFormField<T>>
     with SingleTickerProviderStateMixin {
   final FocusNode _widgetFocusNode = FocusNode();
   final FocusNode _searchFocusNode = FocusNode();
@@ -417,7 +417,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     _effectiveController!.value = _selectedItem;
 
     if (widget.onChanged != null) {
-      widget.onChanged!(_selectedItem);
+      widget.onChanged!(_selectedItem!);
     }
 
     setState(() {});
@@ -428,7 +428,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     _effectiveController!.value = item;
 
     if (widget.onChanged != null) {
-      widget.onChanged!(_selectedItem);
+      widget.onChanged!(_selectedItem!);
     }
     _searchTextController.value = TextEditingValue(text: "");
   }
