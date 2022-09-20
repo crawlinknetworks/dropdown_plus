@@ -374,26 +374,31 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
       } else {
         _toggleOverlay();
       }
-      return false;
+      //return false;
+      return KeyEventResult.ignored;
     } else if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
       _removeOverlay();
-      return true;
+      //return true;
+      return KeyEventResult.handled;
     } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
       int v = _listItemFocusedPosition;
       v++;
       if (v >= _options!.length) v = 0;
       _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
-      return true;
+      //return true;
+      return KeyEventResult.handled;
     } else if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
       int v = _listItemFocusedPosition;
       v--;
       if (v < 0) v = _options!.length - 1;
       _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
-      return true;
+      //return true;
+      return KeyEventResult.handled;
     }
-    return false;
+    //return false;
+    return KeyEventResult.ignored;
   }
 
   _search(String str) async {
