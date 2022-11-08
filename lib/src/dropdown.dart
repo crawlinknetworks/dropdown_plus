@@ -63,7 +63,10 @@ class DropdownFormField<T> extends StatefulWidget {
   /// height of the dropdown overlay, Default: 240
   final double? dropdownHeight;
 
-  /// Style the search box text
+  /// Cursor color of the search box text
+  final Color? searchCursorColor;
+
+  /// Style of the search box text
   final TextStyle? searchTextStyle;
 
   /// Message to disloay if the search dows not match with any item, Default : "No matching found!"
@@ -89,6 +92,7 @@ class DropdownFormField<T> extends StatefulWidget {
     this.onChanged,
     this.onSaved,
     this.dropdownHeight,
+    this.searchCursorColor,
     this.searchTextStyle,
     this.emptyText = "No matching found!",
     this.emptyActionText = 'Create new',
@@ -198,9 +202,9 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
                 isFocused: _isFocused,
                 child: this._overlayEntry != null
                     ? EditableText(
-                        style: TextStyle(fontSize: 16, color: Colors.black87),
+                        style: widget.searchTextStyle ?? TextStyle(fontSize: 16, color: Colors.black87),
                         controller: _searchTextController,
-                        cursorColor: Colors.black87,
+                        cursorColor: widget.searchCursorColor ?? Colors.black87,
                         focusNode: _searchFocusNode,
                         backgroundCursorColor: Colors.transparent,
                         onChanged: (str) {
