@@ -366,7 +366,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
     });
   }
 
-  _onKeyPressed(RawKeyEvent event) {
+  KeyEventResult _onKeyPressed(RawKeyEvent event) {
     // print('_onKeyPressed : ${event.character}');
     if (event.isKeyPressed(LogicalKeyboardKey.enter)) {
       if (_searchFocusNode.hasFocus) {
@@ -374,26 +374,30 @@ class DropdownFormFieldState<T> extends State<DropdownFormField>
       } else {
         _toggleOverlay();
       }
-      return false;
-    } else if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
+      return KeyEventResult.handled;
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.escape)) {
       _removeOverlay();
-      return true;
-    } else if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
+      return KeyEventResult.handled;
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.arrowDown)) {
       int v = _listItemFocusedPosition;
       v++;
       if (v >= _options!.length) v = 0;
       _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
-      return true;
-    } else if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
+      return KeyEventResult.handled;
+    }
+    if (event.isKeyPressed(LogicalKeyboardKey.arrowUp)) {
       int v = _listItemFocusedPosition;
       v--;
       if (v < 0) v = _options!.length - 1;
       _listItemFocusedPosition = v;
       _listItemsValueNotifier.value = List<T>.from(_options ?? []);
-      return true;
+      return KeyEventResult.handled;
     }
-    return false;
+
+    return KeyEventResult.ignored;
   }
 
   _search(String str) async {
