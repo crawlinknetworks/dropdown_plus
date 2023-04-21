@@ -240,62 +240,66 @@ class DropdownFormFieldState<T> extends State<DropdownFormField<T>>
               elevation: 4.0,
               child: SizedBox(
                 height: widget.dropdownHeight ?? 240,
-                child: Container(
-                    color: widget.dropdownColor ?? Colors.white70,
-                    child: ValueListenableBuilder(
-                        valueListenable: _listItemsValueNotifier,
-                        builder: (context, List<T> items, child) {
-                          return _options != null && _options!.length > 0
-                              ? ListView.builder(
-                                  shrinkWrap: true,
-                                  padding: EdgeInsets.zero,
-                                  itemCount: _options!.length,
-                                  itemBuilder: (context, position) {
-                                    T item = _options![position];
-                                    Function() onTap = () {
-                                      _listItemFocusedPosition = position;
-                                      _searchTextController.value =
-                                          TextEditingValue(text: "");
-                                      _removeOverlay();
-                                      _setValue();
-                                    };
-                                    ListTile listTile = widget.dropdownItemFn(
-                                      item,
-                                      position,
-                                      position == _listItemFocusedPosition,
-                                      (widget.selectedFn ?? _selectedFn)(
-                                          _selectedItem, item),
-                                      onTap,
-                                    );
+                child: TextFieldTapRegion(
+                  child: Container(
+                      color: widget.dropdownColor ?? Colors.white70,
+                      child: ValueListenableBuilder(
+                          valueListenable: _listItemsValueNotifier,
+                          builder: (context, List<T> items, child) {
+                            return _options != null && _options!.length > 0
+                                ? ListView.builder(
+                                    shrinkWrap: true,
+                                    padding: EdgeInsets.zero,
+                                    itemCount: _options!.length,
+                                    itemBuilder: (context, position) {
+                                      T item = _options![position];
+                                      Function() onTap = () {
+                                        _listItemFocusedPosition = position;
+                                        _searchTextController.value =
+                                            TextEditingValue(text: "");
+                                        _removeOverlay();
+                                        _setValue();
+                                      };
+                                      ListTile listTile = widget.dropdownItemFn(
+                                        item,
+                                        position,
+                                        position == _listItemFocusedPosition,
+                                        (widget.selectedFn ?? _selectedFn)(
+                                            _selectedItem, item),
+                                        onTap,
+                                      );
 
-                                    return listTile;
-                                  })
-                              : Container(
-                                  padding: EdgeInsets.all(16),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        widget.emptyText,
-                                        style: TextStyle(color: Colors.black45),
-                                      ),
-                                      if (widget.onEmptyActionPressed != null)
-                                        TextButton(
-                                          onPressed: () async {
-                                            await widget
-                                                .onEmptyActionPressed!();
-                                            _search(_searchTextController
-                                                .value.text);
-                                          },
-                                          child: Text(widget.emptyActionText),
+                                      return listTile;
+                                    })
+                                : Container(
+                                    padding: EdgeInsets.all(16),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.max,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          widget.emptyText,
+                                          style:
+                                              TextStyle(color: Colors.black45),
                                         ),
-                                    ],
-                                  ),
-                                );
-                        })),
+                                        if (widget.onEmptyActionPressed != null)
+                                          TextButton(
+                                            onPressed: () async {
+                                              await widget
+                                                  .onEmptyActionPressed!();
+                                              _search(_searchTextController
+                                                  .value.text);
+                                            },
+                                            child: Text(widget.emptyActionText),
+                                          ),
+                                      ],
+                                    ),
+                                  );
+                          })),
+                ),
               )),
         ),
       );
@@ -325,8 +329,7 @@ class DropdownFormFieldState<T> extends State<DropdownFormField<T>>
       _overlayEntry = _createOverlayEntry();
       if (_overlayEntry != null) {
         // Overlay.of(context)!.insert(_overlayEntry!);
-        Overlay.of(context)!
-            .insertAll([_overlayBackdropEntry!, _overlayEntry!]);
+        Overlay.of(context).insertAll([_overlayBackdropEntry!, _overlayEntry!]);
         setState(() {
           _searchFocusNode.requestFocus();
         });
