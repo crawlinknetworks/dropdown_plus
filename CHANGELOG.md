@@ -1,4 +1,9 @@
-## 0.0.8
+## 0.0.10
+
+* Fixed onSelect issue on web
+* Made truely generic
+
+## 0.0.9
 
 * Fixed onSave issue.
 
