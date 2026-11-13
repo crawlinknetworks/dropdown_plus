@@ -1,5 +1,5 @@
 import 'package:dropdown_plus/dropdown_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 void main() {
   runApp(MyApp());
@@ -78,7 +78,9 @@ class _MyHomePageState extends State<MyHomePage> {
                   labelText: "Access"),
               onSaved: (dynamic str) {},
               onChanged: (dynamic str) {},
-              validator: (dynamic str) {},
+              validator: (dynamic str) {
+                return null;
+              },
               displayItemFn: (dynamic item) => Text(
                 (item ?? {})['name'] ?? '',
                 style: TextStyle(fontSize: 16),

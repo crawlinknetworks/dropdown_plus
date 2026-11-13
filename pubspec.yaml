@@ -7,12 +7,13 @@ repository: https://github.com/crawlinknetworks/dropdown_plus
 issue_tracker: https://github.com/crawlinknetworks/dropdown_plus/issues
 
 environment:
-  sdk: ">=2.19.0 <4.0.0"
-  flutter: ">=3.7.0"
+  sdk: ^3.14.0
+  flutter: ">=3.50.0"
 
 dependencies:
   flutter:
     sdk: flutter
+  material_ui: ^1.11.0
 
 dev_dependencies:
   flutter_test:

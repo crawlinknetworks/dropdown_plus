@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:dropdown_plus/dropdown_plus.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 
 /// Simple dropdown with plain text as dropdown items.
 class TextDropdownFormField extends StatelessWidget {

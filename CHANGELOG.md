@@ -1,12 +1,12 @@
 ## 0.0.10
 
-* Fix menu item taps on Flutter 3.7 and later. The menu was closing before `onTap` ran, so `onChanged` never fired.
+* Target Flutter 3.50. Material widgets now come from `package:material_ui/material_ui.dart`. `package:flutter/material.dart` is deprecated as of 3.47 and is not used.
+* Fix menu item taps. The menu was closing before `onTap` ran, so `onChanged` never fired.
 * Handle keyboard input with `KeyEventResult`, so typing in the search field no longer throws.
 * Return the `validator` result and show it on the field.
 * Apply `searchTextStyle` to the search field, and hide the hint while a query is typed.
 * Keep the field in sync with `DropdownEditingController`, including clearing it by setting the value to null.
 * Allow `onChanged` to be asynchronous.
-* Resolve the package on Dart 3.
 
 ## 0.0.8
 
