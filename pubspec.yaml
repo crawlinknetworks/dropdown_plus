@@ -1,14 +1,14 @@
 name: dropdown_plus
 description: Simple and easy to use Dropdown in forms with search, keyboard navigation, offiline data source, remote data source and easy customization.
-version: 0.0.9
+version: 0.0.10
 homepage: https://crawlink.com
 git: https://github.com/crawlinknetworks/dropdown_plus
 repository: https://github.com/crawlinknetworks/dropdown_plus
 issue_tracker: https://github.com/crawlinknetworks/dropdown_plus/issues
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
-  flutter: ">=1.17.0"
+  sdk: ">=2.19.0 <4.0.0"
+  flutter: ">=3.7.0"
 
 dependencies:
   flutter:
